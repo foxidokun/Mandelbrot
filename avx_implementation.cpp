@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 #include "config.h"
-#include "avx_realisation.h"
+#include "avx_implementation.h"
 #include <stdio.h>
 
 const __m256 OFFSETS = _mm256_set_ps( 7*PIXEL_WIDTH, 6*PIXEL_WIDTH, 5*PIXEL_WIDTH, 4*PIXEL_WIDTH, 3*PIXEL_WIDTH,

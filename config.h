@@ -12,6 +12,6 @@ const float offset_y = -1.0;
 
 const float MAX_R2 = 4.0;
 
-const int ITERATION_NUM = 1;
+const int ITERATION_NUM = 100;
 
 #endif //MANDELBROT_CONFIG_H

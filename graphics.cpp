@@ -56,7 +56,10 @@ static void convert_to_colors (gui_t *self, const uint32_t *counters) {
     for (uint y = 0; y < height; ++y) {
         for (uint x = 0; x < width; ++x) {
             uint index = y * width + x;
-            buf[index] = {.red = (counters[index] * 15) % 256, .green=(counters[index] * 40) % 256, .blue=(counters[index] * 30) % 256, .alpha=255};
+            buf[index] = {	.red  = (uint8_t) ((counters[index] * 15) % 256),
+            				.green= (uint8_t) ((counters[index] * 40) % 256),
+            				.blue = (uint8_t) ((counters[index] * 30) % 256),
+            				.alpha=255};
         }
     }
 }
