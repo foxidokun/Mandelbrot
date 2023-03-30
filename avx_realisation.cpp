@@ -29,7 +29,8 @@ void avx::calc(unsigned int width, unsigned int height, uint32_t *counters) {
             for (i = 0; i < MAX_STEPS; ++i) {
                 __m256 x2 = _mm256_mul_ps(x_cur, x_cur);
                 __m256 y2 = _mm256_mul_ps(y_cur, y_cur);
-                __m256 two_xy = _mm256_mul_ps(_mm256_mul_ps(x_cur, y_cur), _mm256_set1_ps(2));
+                __m256 two_xy = _mm256_mul_ps(x_cur, y_cur);
+                two_xy = _mm256_add_ps(two_xy, two_xy);
 
                 __m256 radius = _mm256_add_ps(x2, y2);
 
