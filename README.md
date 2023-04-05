@@ -8,7 +8,7 @@
 4. CPU governor = performance
 5. Process nice level = -20 (minimal)
 6. 100 runs before rendering
-7. Флаги сборки: `-O3 -march=native -mtune=native -flto`
+7. Флаги сборки: `-Ofast -march=native -mtune=native -flto` (see `measures.sh` for detailed info)
 
 #### Results
 | Version | GCC | Clang |
