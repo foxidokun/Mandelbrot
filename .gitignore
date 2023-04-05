@@ -1,0 +1,8 @@
+.idea
+cmake-build-debug
+
+gcc-out
+clang-out
+mandelbrot
+a.out
+*.ipynb
