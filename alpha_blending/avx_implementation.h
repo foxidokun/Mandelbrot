@@ -4,7 +4,7 @@
 #include "image.h"
 
 namespace vector {
-    void mix(image_t *background, const image_t *foreground);
+    void mix(const image_t *background, const image_t *foreground, image_t *out_image);
 }
 
 

@@ -28,7 +28,7 @@ struct __attribute__((__packed__)) bmp_header_t {
     uint32_t biClrImportant;
 };
 
-typedef struct __attribute__((__packed__)) pixel_t {
+struct __attribute__((__packed__)) pixel_t {
     unsigned char  r;
     unsigned char  g;
     unsigned char  b;

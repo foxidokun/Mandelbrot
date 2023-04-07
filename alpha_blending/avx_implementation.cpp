@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <string.h>
 #include <immintrin.h>
 
 #include "avx_implementation.h"
@@ -50,9 +51,12 @@ const __m256i SHUFFLE_UPPERCASE_BACK_TO_PACKED_STATE = _mm256_set_epi8(31, 29, 2
                                                                        0x80, 0x80, 0x80, 0x80
                                                                        );
 
-void vector::mix(image_t *background, const image_t *foreground) {
+void vector::mix(const image_t *background, const image_t *foreground, image_t *out_image) {
     pixel_t *b_pixels = background->pixels;
-    pixel_t *f_pixels  = foreground->pixels;
+    pixel_t *f_pixels = foreground->pixels;
+    pixel_t *o_pixels = out_image->pixels;
+
+    memcpy (o_pixels, b_pixels, background->byte_size);
 
     uint f_width  = foreground->width;
     uint f_height = foreground->height;
@@ -115,7 +119,7 @@ void vector::mix(image_t *background, const image_t *foreground) {
             // Combine
             result = _mm256_or_si256(result, RESULT);
 
-            _mm256_storeu_si256((__m256i *) (b_pixels + y*b_width + x), result);
+            _mm256_storeu_si256((__m256i *) (o_pixels + y*b_width + x), result);
         }
     }
 }
