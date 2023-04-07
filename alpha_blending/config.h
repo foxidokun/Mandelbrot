@@ -1,0 +1,6 @@
+#ifndef MANDELBROT_CONFIG_H
+#define MANDELBROT_CONFIG_H
+
+const int ERROR = -1;
+
+#endif //MANDELBROT_CONFIG_H
