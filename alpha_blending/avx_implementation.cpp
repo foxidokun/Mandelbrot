@@ -50,13 +50,15 @@ const __m256i SHUFFLE_UPPERCASE_BACK_TO_PACKED_STATE = _mm256_set_epi8(31, 29, 2
                                                                        0x80, 0x80, 0x80, 0x80,
                                                                        0x80, 0x80, 0x80, 0x80
                                                                        );
-
 void vector::mix(const image_t *background, const image_t *foreground, image_t *out_image) {
+#ifdef SAME_SIZE_ONLY
+    assert (background->width == foreground->width && foreground->width == out_image->width && "Built with SAME_SIZE_ONLY => expected same size images");
+    assert (background->height == foreground->height && foreground->height == out_image->height && "Built with SAME_SIZE_ONLY => expected same size images");
+#endif
+
     pixel_t *b_pixels = background->pixels;
     pixel_t *f_pixels = foreground->pixels;
     pixel_t *o_pixels = out_image->pixels;
-
-    memcpy (o_pixels, b_pixels, background->byte_size);
 
     uint f_width  = foreground->width;
     uint f_height = foreground->height;
@@ -121,5 +123,15 @@ void vector::mix(const image_t *background, const image_t *foreground, image_t *
 
             _mm256_storeu_si256((__m256i *) (o_pixels + y*b_width + x), result);
         }
+
+#ifndef SAME_SIZE_ONLY
+        int line_end = y*b_width + f_width;
+        memcpy (o_pixels + line_end, b_pixels + line_end, (b_width - f_width) * BYTES_PER_PIXEL);
+#endif
     }
+
+    #ifndef SAME_SIZE_ONLY
+        int file_end = f_height*b_width;
+        memcpy (o_pixels + file_end, b_pixels + file_end, b_width * (background->height - f_height) * BYTES_PER_PIXEL);
+    #endif
 }

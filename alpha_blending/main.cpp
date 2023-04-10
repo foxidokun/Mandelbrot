@@ -31,6 +31,10 @@ const char *COMPILER_NAME = "Unknown";
 
 template<mix_func_t mix_func>
 void bench_mix(const char *func_name) {
+#ifndef SAME_SIZE_ONLY
+    fprintf (stderr, "Warning: bencmarking without SAME_SIZE_ONLY option: memcpys will affect the result");
+#endif
+
     unsigned long iteration_us[ITERATION_NUM] = {};
     struct timeval start, stop;
 
@@ -73,5 +77,11 @@ void bench_mix(const char *func_name) {
 }
 
 int main() {
-    bench_mix<scalar::mix>("vector::mix");
+#ifdef AVX_VERSION
+    bench_mix<vector::mix>("vector::mix");
+#elif defined(SCALAR_VERSION)
+    bench_mix<scalar::mix>("scalar::mix");
+#else
+    #error "No version"
+#endif
 }

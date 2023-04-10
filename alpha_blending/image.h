@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+const int BYTES_PER_PIXEL = 4;
+
 typedef unsigned int uint;
 
 struct __attribute__((__packed__)) bmp_header_t {

@@ -12,8 +12,6 @@
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-const int BYTES_PER_PIXEL = 4;
-
 const int IMAGE_HEADER_SIZE = 40;
 const int PIXEL_DATA_OFFSET = sizeof(bmp_header_t);
 
