@@ -10,7 +10,7 @@ const __m256 OFFSETS = _mm256_set_ps( 7*PIXEL_WIDTH, 6*PIXEL_WIDTH, 5*PIXEL_WIDT
                                                         2*PIXEL_WIDTH, PIXEL_WIDTH, 0.0);
 
 void avx::calc(unsigned int width, unsigned int height, uint32_t *counters) {
-    assert ((uint64_t) counters % 32 == 0 && "Wring alignment");
+    assert ((uint64_t) counters % 32 == 0 && "Wrong alignment");
 
     for (unsigned int y = 0; y < height; ++y) {
         for (unsigned int x = 0; x < width; x += 8) {
