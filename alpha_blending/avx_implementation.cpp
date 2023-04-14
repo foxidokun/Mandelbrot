@@ -66,51 +66,51 @@ void vector::mix(const image_t *background, const image_t *foreground, image_t *
 
     for (uint y = 0; y < f_height; ++y) {
         for (uint x = 0; x < f_width; x += 8) {
-            // fr/bg array:
+            // frontlo/backlo array:
             // [  0  1  2  3  4  5  6  7 ... | 16 17 18 19 20 21 22 23 ... ]
             // [ r1 g1 b1 a1 r2 g2 b2 a2 ... | r5 g5 b5 a5 r6 g6 b6 a6 ... ]
 
-            __m256i fr = _mm256_loadu_si256((__m256i *) (f_pixels + y*f_width + x));
-            __m256i bg = _mm256_loadu_si256((__m256i *) (b_pixels + y*b_width + x));
+            __m256i frontlo = _mm256_loadu_si256((__m256i *) (f_pixels + y * f_width + x));
+            __m256i backlo  = _mm256_loadu_si256((__m256i *) (b_pixels + y * b_width + x));
 
-            // FR/BG array:
+            // fronthi/backhi array:
             // [  0  1  2  3  4  5  6  7 ... | 16 17 18 19 20 21 22 23 ... ]
             // [ r3  0 g3  0 b3  0 a3  0 ... | r7  0 g7  0 b7  0 a7  0 ... ]
-            __m256i FR = _mm256_unpackhi_epi8( fr, ZERO_VECTOR);
-            __m256i BG = _mm256_unpackhi_epi8( bg, ZERO_VECTOR);
+            __m256i fronthi = _mm256_unpackhi_epi8(frontlo, ZERO_VECTOR);
+            __m256i backhi = _mm256_unpackhi_epi8(backlo, ZERO_VECTOR);
 
-            // fr/bg array:
+            // frontlo/backlo array:
             // [  0  1  2  3  4  5  6  7 ... | 16 17 18 19 20 21 22 23 ... ]
             // [ r1  0 g1  0 b1  0 a1  0 ... | r5  0 g5  0 b5  0 a5  0 ... ] and
             // [ r3  0 g3  0 b3  0 a3  0 ... | r7  0 g7  0 b7  0 a7  0 ... ]
-            fr = _mm256_shuffle_epi8(fr, SHUFFLE_LOWERCASE_ARRAYS_VECTOR);
-            bg = _mm256_shuffle_epi8(bg, SHUFFLE_LOWERCASE_ARRAYS_VECTOR);
+            frontlo = _mm256_shuffle_epi8(frontlo, SHUFFLE_LOWERCASE_ARRAYS_VECTOR);
+            backlo = _mm256_shuffle_epi8(backlo, SHUFFLE_LOWERCASE_ARRAYS_VECTOR);
 
             // alpha/ALPHA array:
             // [  0  1  2  3  4  5  6  7 ... | 16 17 18 19 20 21 22 23 ... ]
             // [ a1  0 a1  0 a1  0 a1  0 ... | a5  0 a5  0 a5  0 a5  0 ... ]
-            __m256i alpha = fr;
-            __m256i ALPHA = FR;
+            __m256i alpha = frontlo;
+            __m256i ALPHA = fronthi;
             alpha = _mm256_shuffle_epi8(alpha, SHUFFLE_EXTRACT_ALPHA_VECTOR);
             ALPHA = _mm256_shuffle_epi8(ALPHA, SHUFFLE_EXTRACT_ALPHA_VECTOR);
 
-            fr = _mm256_mullo_epi16 (fr, alpha);
-            FR = _mm256_mullo_epi16 (FR, ALPHA);
+            frontlo = _mm256_mullo_epi16 (frontlo, alpha);
+            fronthi = _mm256_mullo_epi16 (fronthi, ALPHA);
 
             // Multiply background to 255-alpha
             __m256i max_alpha = _mm256_set1_epi16(255);
             alpha = _mm256_sub_epi16(max_alpha, alpha);
             ALPHA = _mm256_sub_epi16(max_alpha, ALPHA);
 
-            bg = _mm256_mullo_epi16 (bg, alpha);
-            BG = _mm256_mullo_epi16 (BG, ALPHA);
+            backlo = _mm256_mullo_epi16 (backlo, alpha);
+            backhi = _mm256_mullo_epi16 (backhi, ALPHA);
 
             // result/RESULT array:
             // [  0  1  2  3  4  5  6  7 ... | 16 17 18 19 20 21 22 23 ... ]
             // [ a1  0 r1  0 g1  0 b1  0 ... | a5  0 r5  0 g5  0 b5  0 ... ] and
             // [ a3  0 r3  0 g3  0 b3  0 ... | a7  0 r7  0 g7  0 b7  0 ... ]
-            __m256i result = _mm256_add_epi16(fr, bg);
-            __m256i RESULT = _mm256_add_epi16(FR, BG);
+            __m256i result = _mm256_add_epi16(frontlo, backlo);
+            __m256i RESULT = _mm256_add_epi16(fronthi, backhi);
 
             // [  0  1  2  3  4  5  6  7 ... | 16 17 18 19 20 21 22 23  ... ]
             // [ a1 r1 g1 b1  0  0  0  0 ... | a5 r5 g5 b5  0  0  0  0  ... ] and

@@ -17,7 +17,8 @@ void dumb::calc (unsigned int width, unsigned int height, uint32_t *counters) {
             for (i = 0; i < MAX_STEPS; ++i) {
                 float x2     = x_cur * x_cur;
                 float y2     = y_cur * y_cur;
-                float two_xy = 2 * x_cur * y_cur;
+                float two_xy = x_cur * y_cur;
+                two_xy += two_xy;
 
                 if (x2 + y2 > MAX_R2) {
                     break;
